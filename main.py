@@ -2,6 +2,16 @@ import pygame
 from Config import config
 import sys
 
+def move_player(player, keys):
+    """Funkcia rieši pohyb hráča nahor alebo nadol"""
+    if keys[pygame.K_UP]:
+       if player.top > 0:
+           player.top -= config.STEP
+
+    if keys[pygame.K_DOWN]:
+        if player.bottom < config.ROZLISENIE[1]:
+            player.bottom += config.STEP
+
 if __name__ == "__main__":
     pygame.init()
 
@@ -10,17 +20,20 @@ if __name__ == "__main__":
 
     clock = pygame.time.Clock()
 
-    hrac1 = pygame.Rect(config.ROZLISENIE[0]- 110, config.ROZLISENIE[1]//2 - 50, 10, 100)
-    hrac2 = pygame.Rect(110, config.ROZLISENIE[1]//2 - 50, 10, 100)
+    hrac1 = pygame.Rect(config.ROZLISENIE[0] - 110, config.ROZLISENIE[1] // 2 - 50, 10, 100)
+    hrac2 = pygame.Rect(110, config.ROZLISENIE[1] // 2 - 50, 10, 100)
 
     while True:
         # Ak vypnem okno, musím vypnuť pygame
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit() # Vypnutie pygamu
-                sys.exit() # Vypnutie celého programu
+                pygame.quit()  # Vypnutie pygamu
+                sys.exit()  # Vypnutie celého programu
 
-        window.fill(config.FARBA_POZADAIA) # Premazanie obrazovky
+        keys = pygame.key.get_pressed()
+        move_player(hrac1, keys)
+
+        window.fill(config.FARBA_POZADAIA)  # Premazanie obrazovky
 
         pygame.draw.rect(window, "white", hrac1)
         pygame.draw.rect(window, "white", hrac2)
@@ -28,4 +41,4 @@ if __name__ == "__main__":
         pygame.display.update()
 
         # Spomalenie cyklu
-        clock.tick(config.FPS) # Obnova obrázkov
+        clock.tick(config.FPS)  # Obnova obrázkov
