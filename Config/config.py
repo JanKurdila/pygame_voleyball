@@ -7,3 +7,7 @@ FARBA_POZADAIA = pygame.Color(0, 0, 0)
 FPS = 15
 
 STEP = 10
+
+RYCHLOST_LOPTY = (2, 2)
+FARBA_LOPTY = pygame.Color(255, 255, 255)
+POLOMER_LOPTY = 10
