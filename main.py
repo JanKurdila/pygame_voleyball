@@ -1,12 +1,15 @@
+# main.py
+
 import pygame
-from Config import config
 import sys
+import random
+from Config import config
 
 def move_player(player, keys):
     """Funkcia rieši pohyb hráča nahor alebo nadol"""
     if keys[pygame.K_UP]:
-       if player.top > 0:
-           player.top -= config.STEP
+        if player.top > 0:
+            player.top -= config.STEP
 
     if keys[pygame.K_DOWN]:
         if player.bottom < config.ROZLISENIE[1]:
@@ -23,7 +26,10 @@ if __name__ == "__main__":
     hrac1 = pygame.Rect(config.ROZLISENIE[0] - 110, config.ROZLISENIE[1] // 2 - 50, 10, 100)
     hrac2 = pygame.Rect(110, config.ROZLISENIE[1] // 2 - 50, 10, 100)
 
-    lopta = pygame.Rect(config.ROZLISENIE[0]/2 -10, config.ROZLISENIE[1]/2 -10, 20, 20)
+    lopta = pygame.Rect(config.ROZLISENIE[0] / 2 - 10, config.ROZLISENIE[1] / 2 - 10, 20, 20)
+
+    rychlost_lopty_x = random.choice([1, -1]) * 4
+    rychlost_lopty_y = random.choice([1, -1]) * 4
 
     while True:
         # Ak vypnem okno, musím vypnuť pygame
@@ -31,15 +37,21 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 pygame.quit()  # Vypnutie pygamu
                 sys.exit()  # Vypnutie celého programu
-        
-        lopta.x += config.RYCHLOST_LOPTY[0] * 3
-        lopta.y += config.RYCHLOST_LOPTY[1] * 3
 
+        # Kontrola kolízie lopty so stenami a odrazenie
+        if lopta.top <= 0 or lopta.bottom >= config.ROZLISENIE[1]:
+            rychlost_lopty_y *= -1
+
+        if lopta.left <= 0 or lopta.right >= config.ROZLISENIE[0]:
+            rychlost_lopty_x *= -1
+
+        lopta.x += rychlost_lopty_x
+        lopta.y += rychlost_lopty_y
 
         keys = pygame.key.get_pressed()
         move_player(hrac1, keys)
 
-        window.fill(config.FARBA_POZADAIA)  # Premazanie obrazovky
+        window.fill(config.FARBA_POZADIA)  # Premazanie obrazovky
 
         pygame.draw.rect(window, "white", hrac1)
         pygame.draw.rect(window, "white", hrac2)
