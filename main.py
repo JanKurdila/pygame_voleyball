@@ -51,7 +51,7 @@ if __name__ == "__main__":
     rychlost_lopty_y = random.choice([1, -1]) * 4
 
     # Počiatočné skóre
-    score = config.SCORE
+    score = [0, 0]
 
     while True:
         for event in pygame.event.get():
@@ -63,11 +63,24 @@ if __name__ == "__main__":
         move_player(hrac1, keys)
         move_ai(hrac2, lopta)
 
+        # Kontrola kolízie lopty so stenami a odrazenie
         if lopta.top <= 0 or lopta.bottom >= config.ROZLISENIE[1]:
             rychlost_lopty_y *= -1
 
-        if lopta.left <= 0 or lopta.right >= config.ROZLISENIE[0]:
-            rychlost_lopty_x *= -1
+        # Kontrola, či lopta prešla za hráča
+        if lopta.left <= 0:  # Hráč 1 nechytil loptu
+            score[1] += 1
+            lopta.x = config.ROZLISENIE[0] / 2 - lopta.width / 2
+            lopta.y = config.ROZLISENIE[1] / 2 - lopta.height / 2
+            rychlost_lopty_x = random.choice([1, -1]) * 4
+            rychlost_lopty_y = random.choice([1, -1]) * 4
+
+        if lopta.right >= config.ROZLISENIE[0]:  # Hráč 2 nechytil loptu
+            score[0] += 1
+            lopta.x = config.ROZLISENIE[0] / 2 - lopta.width / 2
+            lopta.y = config.ROZLISENIE[1] / 2 - lopta.height / 2
+            rychlost_lopty_x = random.choice([1, -1]) * 4
+            rychlost_lopty_y = random.choice([1, -1]) * 4
 
         if check_collision(lopta, hrac1) or check_collision(lopta, hrac2):
             rychlost_lopty_x *= -1
