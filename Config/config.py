@@ -1,4 +1,5 @@
 import random
+import pygame
 
 ROZLISENIE = (800, 600)
 FARBA_POZADIA = (0, 0, 0)
@@ -10,3 +11,9 @@ FPS = 60
 
 HRAC1_SCORE = 0
 HRAC2_SCORE = 0
+
+pygame.init()
+FONT_SCORE = pygame.font.Font(None, 74)
+
+# Počiatočné skóre
+SCORE = [0, 0]
