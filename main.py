@@ -13,12 +13,17 @@ def move_player(player, keys):
         if player.bottom < config.ROZLISENIE[1]:
             player.bottom += config.STEP
 
+def move_ai(player, ball):
+    """Funkcia riadi pohyb AI hráča nahor alebo nadol"""
+    if player.bottom < ball.top and player.bottom < config.ROZLISENIE[1]:
+        player.top += config.STEP * 1.5  # Zvýšenie rýchlosti AI
+    if player.top > ball.bottom and player.top > 0:
+        player.top -= config.STEP * 1.5  # Zvýšenie rýchlosti AI
+
 def check_collision(ball, player):
     """Kontrola kolízie lopty s hráčom a odrazenie lopty"""
     if ball.colliderect(player):
-        # Ak lopta narazí na hráča zľava alebo sprava
-        if ball.left < player.right and ball.right > player.left:
-            return True
+        return True
     return False
 
 if __name__ == "__main__":
@@ -38,30 +43,28 @@ if __name__ == "__main__":
     rychlost_lopty_y = random.choice([1, -1]) * 4
 
     while True:
-        # Ak vypnem okno, musím vypnuť pygame
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()  # Vypnutie pygamu
-                sys.exit()  # Vypnutie celého programu
+                pygame.quit()
+                sys.exit()
 
         keys = pygame.key.get_pressed()
         move_player(hrac1, keys)
+        move_ai(hrac2, lopta)
 
-        # Kontrola kolízie lopty so stenami a odrazenie
         if lopta.top <= 0 or lopta.bottom >= config.ROZLISENIE[1]:
             rychlost_lopty_y *= -1
 
         if lopta.left <= 0 or lopta.right >= config.ROZLISENIE[0]:
             rychlost_lopty_x *= -1
 
-        # Kontrola kolízie lopty s hráčom hrac1
-        if check_collision(lopta, hrac1):
+        if check_collision(lopta, hrac1) or check_collision(lopta, hrac2):
             rychlost_lopty_x *= -1
 
         lopta.x += rychlost_lopty_x
         lopta.y += rychlost_lopty_y
 
-        window.fill(config.FARBA_POZADIA)  # Premazanie obrazovky
+        window.fill(config.FARBA_POZADIA)
 
         pygame.draw.rect(window, "white", hrac1)
         pygame.draw.rect(window, "white", hrac2)
@@ -69,5 +72,4 @@ if __name__ == "__main__":
 
         pygame.display.update()
 
-        # Spomalenie cyklu
-        clock.tick(config.FPS)  # Obnova obrázkov
+        clock.tick(config.FPS)
