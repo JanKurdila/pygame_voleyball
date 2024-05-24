@@ -1,5 +1,3 @@
-# main.py
-
 import pygame
 import sys
 import random
@@ -14,6 +12,14 @@ def move_player(player, keys):
     if keys[pygame.K_DOWN]:
         if player.bottom < config.ROZLISENIE[1]:
             player.bottom += config.STEP
+
+def check_collision(ball, player):
+    """Kontrola kolízie lopty s hráčom a odrazenie lopty"""
+    if ball.colliderect(player):
+        # Ak lopta narazí na hráča zľava alebo sprava
+        if ball.left < player.right and ball.right > player.left:
+            return True
+    return False
 
 if __name__ == "__main__":
     pygame.init()
@@ -38,6 +44,9 @@ if __name__ == "__main__":
                 pygame.quit()  # Vypnutie pygamu
                 sys.exit()  # Vypnutie celého programu
 
+        keys = pygame.key.get_pressed()
+        move_player(hrac1, keys)
+
         # Kontrola kolízie lopty so stenami a odrazenie
         if lopta.top <= 0 or lopta.bottom >= config.ROZLISENIE[1]:
             rychlost_lopty_y *= -1
@@ -45,11 +54,12 @@ if __name__ == "__main__":
         if lopta.left <= 0 or lopta.right >= config.ROZLISENIE[0]:
             rychlost_lopty_x *= -1
 
+        # Kontrola kolízie lopty s hráčom hrac1
+        if check_collision(lopta, hrac1):
+            rychlost_lopty_x *= -1
+
         lopta.x += rychlost_lopty_x
         lopta.y += rychlost_lopty_y
-
-        keys = pygame.key.get_pressed()
-        move_player(hrac1, keys)
 
         window.fill(config.FARBA_POZADIA)  # Premazanie obrazovky
 
